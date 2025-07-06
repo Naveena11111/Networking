@@ -1,4 +1,4 @@
-- name: Deploy Docker App to EC2 Ubuntu
+- name: Deploy Docker App 
   hosts: all
   become: true
 
@@ -21,7 +21,7 @@
       shell: apt install docker.io -y 
       become: true
 
-    - name: Ensure Docker service is started and enabled
+    - name: Docker service
       service:
         name: docker
         state: started
@@ -29,24 +29,24 @@
 
     - name: Create app directory
       file:
-        path: /home/ubuntu/webapp
+        path: /home/ubuntu/testapp
         state: directory
         owner: ubuntu
         group: ubuntu
         mode: '0755'
 
-    - name: Copy application files to EC2
+    - name: Copy application files
       copy:
         src: ../webapp/
-        dest: /home/ubuntu/webapp/
+        dest: /home/ubuntu/testapp/
         owner: ubuntu
         group: ubuntu
         mode: '0644'
 
-    - name: Build Docker image
-      command: docker build -t webapp /home/ubuntu/webapp
+    - name: Build Docker 
+      command: docker build -t testapp /home/ubuntu/testapp
       args:
-        chdir: /home/ubuntu/webapp
+        chdir: /home/ubuntu/testapp
 
     - name: Run Docker container
-      command: docker run -d --restart unless-stopped --name webapp -p 80:80 webapp
+      command: docker run -d --name testapp -p 80:80 testapp
